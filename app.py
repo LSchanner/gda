@@ -129,12 +129,6 @@ def Setup():
                 offering=LocOffering)
             LocS.add(NewTeacherComment)
 
-#            NewSubjectComment = SubjectComment(
-#                text=Response["text-offering"],
-#                subject=LocSubject,
-#                user=Me,
-#                anonymous=bool("False"))
-
         if not Response['text-offering'] == "":
             NewOfferingComment = OfferingComment(
                 text=Response["text-offering"],
@@ -619,19 +613,6 @@ def Setup():
 
                 StudentCall = S.query(Student).filter(
                     Student.ra == Form['ra'].value)
-                # Students disabled
-#                StudentCall = S.query(Student).filter(
-#                    Student.ra == int(Form['RA'].value))
-
-#                if StudentCall.count():
-#                    StudentCall = StudentCall.one()
-#                    UserCall = S.query(User).filter(
-#                        User.student == StudentCall)
-
-#                else:
-#                    return Render.login(
-#                        Form, "Usuário não cadastrado.", Render)
-
                 if StudentCall.count():
                     StudentCall = StudentCall.one()
                     UserCall = S.query(User).filter(StudentCall.id == User.student_id).one()
@@ -730,71 +711,6 @@ def Setup():
                 Session.user_id = UserCall.id
                 raise web.seeother('/confirmacao')
 
-
-                # Students disabled
-#                StudentCall = S.query(Student).filter(
-#                    Student.ra == int(Form['RA'].value))
-
-#                if StudentCall.count():
-#                    StudentCall = StudentCall.one()
-#                    UserCall = S.query(User).filter(
-#                        User.student == StudentCall)
-
-#                else:
-#                    StudentCall = Student(
-#                        ra = Form['RA'].value, name = Form['Nome'].value)
-#                    S.add(StudentCall)
-
-#                    S.commit()
-
-#                    Map(StudentPage, "/estudantes/%s" % str(
-#                        StudentCall.ra).zfill(6),
-#                        dict(StudentInst = StudentCall))
-
-#                    UserCall = S.query(User).filter(
-#                        User.student == StudentCall)
-
-#                UserCall = S.query(User).filter(
-#                    User.email == Form['E-mail'].value).one()
-
-#                if UserCall.count():
-#                    UserCall = UserCall.one()
-#                    if UserCall.password == Form['Senha'].value:
-                        # TODO Check confirmation
-#                        Session.user_id = UserCall.id
-#                        raise web.seeother('/')
-#                    else:
-#                        return "Meh"
-
-#                else:
-
-#                    Match = re.search(
-#                        r'[\w.-]+@[\w.-]+.unicamp.br',
-#                        Form['E-mail'].value)
-
-#                    if not Form['E-mail'].value:
-#                        return "Meh"
-
-#                    UserCall = User(
-#                        email=Form['E-mail'].value,
-#                        password=Form['Senha'].value)
-                    # student = StudentCall)
-
-                    # TODO Send Mail
-                    # web.sendmail(
-                    #      'GDA',
-                    #      Form['E-mail'].value,
-                    #      'subject', 'message')
-
-#                    S.add(UserCall)
-#                    S.commit()
-#                    UserCall = S.query(User).filter(
-#                        User.student == StudentCall).one()
-
-#                    Session.user_id = UserCall.id
-#                    return "First, Hi"
-
-    # TODO Destroy Session
     class LogoutPage:
         def GET(self):
             Session.user_id = False
@@ -925,7 +841,6 @@ def Setup():
             IsLogged()
             IsConfirmed()
             Response = POSTParse(web.data())
-#            CommitComment(self.TeacherInst, Response)
 
             return Render.teacherpage(self.TeacherInst, Render)
 
@@ -941,7 +856,6 @@ def Setup():
             IsLogged()
             IsConfirmed()
             Response = POSTParse(web.data())
-#            CommitComment(self.SubjectInst, Response)
 
             return Render.subjectpage(self.SubjectInst, Render)
 
@@ -972,26 +886,6 @@ def Setup():
         def POST(self):
             IsLogged()
             IsConfirmed()
-        #    Response = POSTParse(web.data())
-#            CommitComment(self.OfferingInst, Response)
-        #    form = RateOffering()
-            #if not form.validates():
-            #    return Render.database(Render,form1,form2)
-            #else:
-        #    form.validates()
-        #    S = sessionmaker(bind=DB)()
-        #    Rate = OfferingRate(
-        #                    answers=form.d.Respostas,
-        #                    offering_id= self.OfferingInst.id,
-        #                    question1=form.d.Coluna11,
-        #                    question2=form.d.Coluna12,
-        #                    question3=form.d.Coluna13,
-        #                    question4=form.d.Coluna14,
-        #                    question5=form.d.Coluna15,
-        #                    question6=form.d.Coluna16)
-        #    S.add(Rate)
-        #    S.commit()
-            #return self.OfferingInst.id
 
             #deixar as duas linhas abaixo apenas quando formos inserir novas avaliações oficiais
             semestre = S.query(Semester).filter(Semester.id == self.OfferingInst.semester_id).one()
@@ -1001,49 +895,6 @@ def Setup():
             #return Render.offeringpage(self.OfferingInst, Render,form, False)
 
 
-
-    # TODO Unfinished
-    '''
-    class UploadHandler:
-        def GET(self):
-                web.header("Content-Type", "text/html; charset=utf-8")
-                return
-    <html><head></head><body>
-    <form method="POST" enctype="multipart/form-data" action="">
-    <input type="file" name="myfile" />
-    <br/>
-    <input type="submit" />
-    </form>
-    </body></html>
-
-
-        def POST(self):
-                x = web.input(myfile={})
-                filedir = 'uploads' # change this to the directory you want to store the file in.
-                if 'myfile' in x: # to check if the file-object is created
-                        filepath=x.myfile.filename.replace('\\','/') # replaces the windows-style slashes with linux ones.
-                        filename=filepath.split('/')[-1] # splits the and chooses the last part (the filename with extension)
-                        fout = open(filedir +'/'+ filename,'w') # creates the file where the uploaded file should be stored
-                        fout.write(x.myfile.file.read()) # writes the uploaded file to the newly created file.
-                        fout.close() # closes the file, upload complete.
-                raise web.seeother('/upload')
-
-#        OfferingInst = Offering()
-#
-#        def GET(self):
-#            IsLogged()
-#            IsConfirmed()
-#            return Render.offeringpage(self.OfferingInst, Render)
-
-#        def POST(self):
-#            IsLogged()
-#            Response = POSTParse(web.data())
-#            CommitComment(self.OfferingInst, Response)
-#
-#            return Render.offeringpage(self.OfferingInst, Render)
-#
-#
-'''
     class SearchTeacher:
         def GET(self):
             IsLogged()
@@ -1109,15 +960,6 @@ def Setup():
                     auxiliar['text-offering'] = None
                 if 'text-teacher' not in auxiliar.keys():
                     auxiliar['text-teacher'] = None
-
-    #            LocTeacher = LocS.query(Teacher).filter(
-    #                Teacher.id == self.OfferingInst.teacher_id).one()
-
-    #            LocSubject = LocS.query(Subject).filter(
-    #                Subject.id == self.OfferingInst.subject_id).one()
-
-    #            LocSemester = LocS.query(Semester).filter(
-    #                Semester.id == self.OfferingInst.semester_id).one()
 
                 Me = LocS.query(User).filter(User.id == Session.user_id).one()
                 LocOffering = LocS.query(Offering).filter(
@@ -1264,126 +1106,12 @@ def Setup():
                 UpdateSubjectDisplay(disciplina)
 
                 raise web.seeother(self.OfferingInst.EncodeURL())
-    #            try:
-    #
-    #
-    #            except:
-    #                LocS.rollback()
-    #                return True
-
-    '''
-    class FaqPage:
-        def GET(self):
-            IsLogged()
-            IsConfirmed()
-
-            return Render.faq(Render)
-
-
-            LocDB = create_engine(UserDB, echo=False)
-            S = sessionmaker(bind=LocDB)()
-
-            for Line in S.query(Subject):
-                if (S.query(AnswerSumSubject).filter(Line.id == AnswerSumSubject.subject_id).count())==0:
-                    CreateLineAnswerSumSubject(Line)
-                if (S.query(SubjectDisplay).filter(Line.id == SubjectDisplay.subject_id).count())==0:
-                    CreateLineSubjectDisplay(Line)
-
-            for Line in S.query(Teacher):
-                if (S.query(AnswerSumTeacher).filter(Line.id == AnswerSumTeacher.teacher_id).count())==0:
-                    CreateLineAnswerSumTeacher(Line)
-                if (S.query(TeacherDisplay).filter(Line.id == TeacherDisplay.teacher_id).count())==0:
-                    CreateLineTeacherDisplay(Line)
-
-            for Line in S.query(Offering):
-                if ((S.query(OfferingDisplay).filter(OfferingDisplay.offering_id == Line.id)).count()) == 0:
-                    LocOffering = S.query(Offering).filter(
-                        Offering.id == Line.id).one()
-                    NewDisplay=OfferingDisplay(
-                    q1_resp = u'',
-                    q1_porc = 0,
-                    q2_resp = u'',
-                    q2_porc = 0,
-                    q3_resp = u'',
-                    q3_porc = 0,
-                    q4_resp = u'',
-                    q4_porc = 0,
-                    q5_resp = u'',
-                    q5_porc = 0,
-                    q6_resp = u'',
-                    q6_porc = 0,
-                    q7_resp = u'',
-                    q7_porc = 0,
-                    q8_resp = u'',
-                    q8_porc = 0,
-                    q9_resp = u'',
-                    q9_porc = 0,
-                    q10_resp = u'',
-                    q10_porc = 0,
-                    q11_resp = u'',
-                    q11_porc = 0,
-                    q12_resp = u'',
-                    q12_porc = 0,
-                    q13_resp = u'',
-                    q13_porc = 0,
-                    offering = LocOffering
-                    )
-
-                    S.add(NewDisplay)
-                    S.commit()
-
-                if (S.query(AnswerSum.offering_id).filter(AnswerSum.offering_id == Line.id).count())==0:
-                    LocOffering = S.query(Offering).filter(
-                        Offering.id == Line.id).one()
-                    NewSum = AnswerSum(
-                    q1_sim = 0,
-                    q1_nao = 0,
-                    q2_correto = 0,
-                    q2_antes = 0,
-                    q2_depois = 0,
-                    q3_adequada = 0,
-                    q3_curta = 0,
-                    q3_longa = 0,
-                    q4_alta = 0,
-                    q4_normal = 0,
-                    q4_baixa = 0,
-                    q5_dificil = 0,
-                    q5_normal = 0,
-                    q5_facil = 0,
-                    q6_dificil = 0,
-                    q6_normal = 0,
-                    q6_facil = 0,
-                    q7_sim = 0,
-                    q7_nao = 0,
-                    q8_boa = 0,
-                    q8_media = 0,
-                    q8_ruim = 0,
-                    q9_sim = 0,
-                    q9_nao = 0,
-                    q10_sim = 0,
-                    q10_nao = 0,
-                    q11_sim = 0,
-                    q11_nao = 0,
-                    q12_sim = 0,
-                    q12_nao = 0,
-                    q13_sim = 0,
-                    q13_nao = 0,
-                    offering = LocOffering
-                    )
-                    S.add(NewSum)
-                    S.commit()
-                '''
 
     class IndexPage:
         def GET(self):
             IsLogged()
             IsConfirmed()
             return Render.index(Render)
-
-#    class ContactPage:
-#        def GET(self):
-#            IsLogged()
-#            return Render.contact(Render)
 
     class AboutPage:
         def GET(self):
@@ -1435,157 +1163,6 @@ def Setup():
 
             else:
                 return Render.forgottenpassword(Form, "Não existe usuário cadastrado com o RA fornecido!", Render)
-    '''
-    class Database:
-        def GET(self):
-            IsLogged()
-            IsConfirmed()
-            UpdateLists()
-            form1 = AddSemester()
-            form2 = AddOffering()
-            form3 = AddTeacher()
-            form4 = AddSubject()
-            # make sure you create a copy of the form by calling it (line above)
-            # Otherwise changes will appear globally
-            return Render.database(Render,form1, form2, form3, form4)
-
-        def POST(self):
-            form1 = AddSemester()
-            form2 = AddOffering()
-            form3 = AddTeacher()
-            form4 = AddSubject()
-
-            S = sessionmaker(bind=DB)()
-
-            if form1.validates():
-                Sem = Semester(
-                    year = form1.d.Ano,
-                    sem = form1.d.Semestre[0]
-                )
-                S.add(Sem)
-                S.commit()
-
-            elif form2.validates():
-                Off = Offering(subject_id=form2.d.Disciplina,
-                                teacher_id=form2.d.Professor,
-                                semester_id=form2.d.Semestre,
-                                students = int(form2.d.Matriculados),
-                                code = form2.d.Turma)
-                S.add(Off)
-                S.commit()
-
-                Offnovelty = S.query(Offering).filter(Offering.id == Off.id).one()
-
-                if ((S.query(OfferingDisplay).filter(OfferingDisplay.offering_id == Offnovelty.id)).count()) == 0:
-                    LocOffering = S.query(Offering).filter(
-                        Offering.id == Offnovelty.id).one()
-                    NewDisplay=OfferingDisplay(
-                    q1_resp = u'',
-                    q1_porc = 0,
-                    q2_resp = u'',
-                    q2_porc = 0,
-                    q3_resp = u'',
-                    q3_porc = 0,
-                    q4_resp = u'',
-                    q4_porc = 0,
-                    q5_resp = u'',
-                    q5_porc = 0,
-                    q6_resp = u'',
-                    q6_porc = 0,
-                    q7_resp = u'',
-                    q7_porc = 0,
-                    q8_resp = u'',
-                    q8_porc = 0,
-                    q9_resp = u'',
-                    q9_porc = 0,
-                    q10_resp = u'',
-                    q10_porc = 0,
-                    q11_resp = u'',
-                    q11_porc = 0,
-                    q12_resp = u'',
-                    q12_porc = 0,
-                    q13_resp = u'',
-                    q13_porc = 0,
-                    offering = LocOffering
-                    )
-
-                    S.add(NewDisplay)
-                    S.commit()
-
-                if (S.query(AnswerSum).filter(AnswerSum.offering_id == Offnovelty.id).count())==0:
-                    LocOffering = S.query(Offering).filter(
-                        Offering.id == Offnovelty.id).one()
-                    NewSum = AnswerSum(
-                    q1_sim = 0,
-                    q1_nao = 0,
-                    q2_correto = 0,
-                    q2_antes = 0,
-                    q2_depois = 0,
-                    q3_adequada = 0,
-                    q3_curta = 0,
-                    q3_longa = 0,
-                    q4_alta = 0,
-                    q4_normal = 0,
-                    q4_baixa = 0,
-                    q5_dificil = 0,
-                    q5_normal = 0,
-                    q5_facil = 0,
-                    q6_dificil = 0,
-                    q6_normal = 0,
-                    q6_facil = 0,
-                    q7_sim = 0,
-                    q7_nao = 0,
-                    q8_boa = 0,
-                    q8_media = 0,
-                    q8_ruim = 0,
-                    q9_sim = 0,
-                    q9_nao = 0,
-                    q10_sim = 0,
-                    q10_nao = 0,
-                    q11_sim = 0,
-                    q11_nao = 0,
-                    q12_sim = 0,
-                    q12_nao = 0,
-                    q13_sim = 0,
-                    q13_nao = 0,
-                    offering = LocOffering
-                    )
-                    S.add(NewSum)
-                    S.commit()
-
-            elif form4.validates():
-                Subj = Subject(
-                    code = form4.d.Codigo,
-                    name = form4.d.Nome,
-                    credits = int(form4.d.Creditos),
-                    summary = form4.d.Ementa
-                )
-                S.add(Subj)
-                S.commit()
-
-                Subjnovelty = S.query(Subject).filter(Subject.id == Subj.id).one()
-
-                if (S.query(AnswerSumSubject).filter(Subjnovelty.id == AnswerSumSubject.subject_id).count())==0:
-                    CreateLineAnswerSumSubject(Subjnovelty)
-                if (S.query(SubjectDisplay).filter(Subjnovelty.id == SubjectDisplay.subject_id).count())==0:
-                    CreateLineSubjectDisplay(Subjnovelty)
-
-            elif form3.validates():
-                Teac = Teacher(
-                    name = form3.d.Nome
-                )
-                S.add(Teac)
-                S.commit()
-
-                Teachernovelty = S.query(Teacher).filter(Teacher.id == Teac.id).one()
-
-                if (S.query(AnswerSumTeacher).filter(Teachernovelty.id == AnswerSumTeacher.teacher_id).count())==0:
-                    CreateLineAnswerSumTeacher(Teachernovelty)
-                if (S.query(TeacherDisplay).filter(Teachernovelty.id == TeacherDisplay.teacher_id).count())==0:
-                    CreateLineTeacherDisplay(Teachernovelty)
-
-            raise web.seeother('/database')
-            '''
 
     # URL Mappings
     S = sessionmaker(bind=DB)()
@@ -1602,11 +1179,6 @@ def Setup():
     Map(ForgottenPassword, "/esqueci")
     Map(ConfirmationPage, "/confirmacao")
     Map(UserPage, "/user")
-
-    #Map(ContactPage, "/contato")
-    #Map(FaqPage, "/faq")
-    #Map(Database, "/database")
-    #Map(UploadHandler, "/upload")
 
     for Line in S.query(Student):
         Map(StudentPage, Line.EncodeURL(), dict(StudentInst=Line))
