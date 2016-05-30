@@ -21,7 +21,7 @@ PROFESSOR_PATTERN = 'Docente:</span>&nbsp;&nbsp;(?P<professor>.+)</td>'
 RA_PATTERN = '<td height="18" bgcolor="white" align="center" class="corpo" width="80">([0-9]+)</td>'
 NAME_PATTERN = '<td height="18" bgcolor="white" width="270" align="left" class="corpo">&nbsp;&nbsp;&nbsp;&nbsp;(.+)</td>'
 
-COURSE_PATTERN = '<div class="ancora"><a name="([A-Z][A-Z][0-9]{3})">[A-Z][A-Z][0-9]{3} - (.*)</a> </div>'
+COURSE_PATTERN = '<div class="ancora"><a name="([A-Z][A-Z][0-9]{3})">[A-Z][A-Z][0-9]{3} - (.*)</a> </div>[^\Z]*? C:([0-9]{3}) [^\Z]*?<strong>Ementa: </strong>(.*)<br />'
 
 ################################################################################
 # Funções
@@ -147,7 +147,9 @@ def get_courses():
         for match in matches:
             course_id = match.group(1)
             course_name =  match.group(2)
-            courses.append((course_id,course_name))
+            credits = match.group(3)
+            description = match.group(4)
+            courses.append((course_id,course_name,credits,description))
 
         i += 1
 
